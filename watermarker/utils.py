@@ -4,9 +4,13 @@ Utilities for applying a watermark to an image using PIL.
 Original Source: http://code.activestate.com/recipes/362879/
 """
 
-import Image, ImageEnhance
 import random
 import traceback
+
+try:
+    import Image, ImageEnhance
+except ImportError:
+    from PIL import Image, ImageEnhance
 
 def _percent(var):
     """

@@ -1,6 +1,5 @@
 from datetime import datetime
 from hashlib import sha1
-import Image
 import errno
 import logging
 import os
@@ -8,8 +7,15 @@ import traceback
 
 from django.conf import settings
 from django import template
+from django.core.files.storage import default_storage
+
 from watermarker import utils
 from watermarker.models import Watermark
+
+try:
+    import Image
+except:
+    from PIL import Image
 
 register = template.Library()
 
@@ -167,6 +173,8 @@ class Watermarker(object):
     def get_url_path(self, url, root=settings.MEDIA_ROOT,
         url_root=settings.MEDIA_URL):
         """Makes a filesystem path from the specified URL"""
+        if default_storage and hasattr(default_storage, 'url_to_path'):
+            return default_storage.url_to_path(url)
 
         if url.startswith(url_root):
             url = url[len(url_root):] # strip media root url
