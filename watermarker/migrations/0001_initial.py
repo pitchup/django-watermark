@@ -8,9 +8,6 @@ from django.db import models
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        # Deleting model 'Watermark'
-        db.delete_table(u'watermarker_watermark')
-
         # Adding model 'Watermark'
         db.create_table(u'watermarker_watermark', (
             (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
