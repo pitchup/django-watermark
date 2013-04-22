@@ -73,17 +73,23 @@ def determine_scale(scale, img, mark, ratio=None):
 
         if type(scale) in (str, unicode) and scale.lower() == 'f':
             # scale, but preserve the aspect ratio
-            image_width = img.size[0]
-            image_height = img.size[1]
-            if ratio:
-                image_width = ratio[0]
-                image_height = ratio[1]
             scale = min(
-                float(image_width) / mark.size[0],
-                float(image_height) / mark.size[1]
+                float(img.size[0]) / mark.size[0],
+                float(img.size[1]) / mark.size[1]
             )
         elif type(scale) not in (float, int):
             raise ValueError('Invalid scale value "%s"!  Valid values are 1) "F" for ratio-preserving scaling and 2) floating-point numbers and integers greater than 0.' % (scale,))
+
+        if ratio:
+            # scale the mark via the ratio vs image
+            scale = max(
+                float(img.size[0]) / ratio[0],
+                float(img.size[1]) / ratio[1],
+            )
+
+            print "img: %s,%s" % img.size
+            print "ratio: %s,%s" % ratio
+            print "scale: %s" % scale
 
         # determine the new width and height
         w = int(mark.size[0] * float(scale))
