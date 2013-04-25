@@ -21,7 +21,7 @@ except:
 register = template.Library()
 
 # determine the quality of the image after the watermark is applied
-QUALITY = getattr(settings, 'WATERMARKING_QUALITY', 85)
+QUALITY = getattr(settings, 'WATERMARKING_QUALITY', 95)
 OBSCURE = getattr(settings, 'WATERMARK_OBSCURE_ORIGINAL', True)
 RANDOM_POS_ONCE = getattr(settings, 'WATERMARK_RANDOM_POSITION_ONCE', True)
 
