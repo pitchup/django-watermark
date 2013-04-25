@@ -35,6 +35,7 @@ class WatermarkImageField(ImageField):
         self.greyscale = kwargs.pop('greyscale', False)
         self.rotation = kwargs.pop('rotation', 0)
         self.quality = kwargs.pop('quality', 85)
+        self.dimension_ratio = kwargs.pop('dimension_ratio', None)
 
         super(WatermarkImageField, self).__init__(*args, **kwargs)
 
@@ -53,7 +54,7 @@ class WatermarkImageField(ImageField):
         mark = Image.open(watermark.image.path)
 
         # determine the actual value that the parameters provided will render
-        scale = utils.determine_scale(self.scale, target, mark)
+        scale = utils.determine_scale(self.scale, target, mark, self.dimension_ratio)
         rotation = utils.determine_rotation(self.rotation, mark)
         pos = utils.determine_position(self.position, target, mark)
 

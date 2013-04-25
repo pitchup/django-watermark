@@ -58,7 +58,7 @@ def reduce_opacity(img, opacity):
 
     return img
 
-def determine_scale(scale, img, mark):
+def determine_scale(scale, img, mark, ratio=None):
     """
     Scales an image using a specified ratio or 'F'.  If `scale` is 'F', the
     image is scaled to be as big as possible to fit in `img` without falling off
@@ -74,18 +74,29 @@ def determine_scale(scale, img, mark):
         if type(scale) in (str, unicode) and scale.lower() == 'f':
             # scale, but preserve the aspect ratio
             scale = min(
-                        float(img.size[0]) / mark.size[0],
-                        float(img.size[1]) / mark.size[1]
-                       )
+                float(img.size[0]) / mark.size[0],
+                float(img.size[1]) / mark.size[1]
+            )
         elif type(scale) not in (float, int):
             raise ValueError('Invalid scale value "%s"!  Valid values are 1) "F" for ratio-preserving scaling and 2) floating-point numbers and integers greater than 0.' % (scale,))
+
+        if ratio:
+            # scale the mark via the ratio vs image
+            scale = max(
+                float(img.size[0]) / ratio[0],
+                float(img.size[1]) / ratio[1],
+            )
+
+            print "img: %s,%s" % img.size
+            print "ratio: %s,%s" % ratio
+            print "scale: %s" % scale
 
         # determine the new width and height
         w = int(mark.size[0] * float(scale))
         h = int(mark.size[1] * float(scale))
 
         # apply the new width and height, and return the new `mark`
-        return (w, h)
+        return w, h
     else:
         return mark.size
 
