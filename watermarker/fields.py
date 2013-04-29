@@ -49,9 +49,12 @@ class WatermarkImageField(ImageField):
             return
 
         # get the image to watermark
-        image_field = getattr(model_instance, self.populate_from)
-        target = Image.open(image_field.path)
-        mark = Image.open(watermark.image.path)
+        try:
+            image_field = getattr(model_instance, self.populate_from)
+            target = Image.open(image_field.path)
+            mark = Image.open(watermark.image.path)
+        except (IOError, ValueError):
+            return
 
         # determine the actual value that the parameters provided will render
         scale = utils.determine_scale(self.scale, target, mark, self.dimension_ratio)
@@ -83,8 +86,9 @@ class WatermarkImageField(ImageField):
         file = super(WatermarkImageField, self).pre_save(model_instance, add)
         if not file or not os.path.exists(file.path):
             watermarked_file = self.create_watermark(model_instance)
-            print "saving: %s" % watermarked_file.name
-            file.save(watermarked_file.name, watermarked_file, save=False)
+            if watermarked_file:
+                print "saving: %s" % watermarked_file.name
+                file.save(watermarked_file.name, watermarked_file, save=False)
         return file
 
     def south_field_triple(self):
